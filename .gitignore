@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# run outputs: traces and summaries are regenerable from a config + seed
+results/
+figures/
+*.npz

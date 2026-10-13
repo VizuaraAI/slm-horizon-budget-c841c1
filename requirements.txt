@@ -1,0 +1,26 @@
+# Core numerics
+numpy>=1.26,<3
+scipy>=1.13
+pandas>=2.2
+
+# Models and data
+torch>=2.4
+transformers>=4.45
+accelerate>=1.0
+datasets>=3.0
+sentencepiece>=0.2.0
+huggingface-hub>=0.26
+
+# Optional fast local serving (uncomment if you have a CUDA GPU)
+# vllm>=0.6.3
+
+# Config, CLI, logging
+pyyaml>=6.0
+tqdm>=4.66
+rich>=13.7
+
+# Plotting for the paper figures
+matplotlib>=3.9
+
+# Tests
+pytest>=8.3

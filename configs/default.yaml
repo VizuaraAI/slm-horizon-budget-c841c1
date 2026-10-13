@@ -1,0 +1,58 @@
+# Default configuration for slm-horizon-budget.
+#
+# Everything in this file can be overridden on the command line, e.g.
+#   python -m src.evaluate --config configs/default.yaml --model.name Qwen/Qwen2.5-1.5B-Instruct
+#
+# Start with backend: echo. It runs the whole pipeline in seconds with a
+# synthetic step oracle so you can check the plumbing before you spend GPU time.
+
+seed: 0
+
+model:
+  # backend: "echo" (no GPU, synthetic steps) | "hf" (local transformers)
+  backend: echo
+  name: Qwen/Qwen2.5-1.5B-Instruct
+  dtype: bfloat16
+  device: auto
+  max_new_tokens: 96
+  temperature: 0.0
+  top_p: 1.0
+  # Used only by the echo backend: ground-truth per-step competence and the
+  # strength of error-to-error contagion (0.0 = independent steps).
+  echo_step_accuracy: 0.92
+  echo_contagion: 0.35
+
+task:
+  # chain_kv | chain_arith | fsm
+  family: chain_kv
+  # Horizons to sweep. Each horizon is the number of dependent steps.
+  horizons: [1, 2, 4, 8, 16, 32, 64]
+  episodes_per_horizon: 64
+  # Task-family knobs
+  vocab_size: 128
+  modulus: 97
+  num_states: 8
+  branching: 3
+
+intervention:
+  # none | vote | verifier
+  kind: none
+  # first-to-ahead-by-k voting, as in massively decomposed agentic processes
+  vote_k: 2
+  vote_max_samples: 9
+  vote_temperature: 0.7
+  # step-level verifier gate
+  verifier_path: null
+  verifier_threshold: 0.5
+  verifier_max_retries: 2
+
+estimate:
+  # End-to-end success targets for which we invert the horizon arithmetic.
+  targets: [0.5, 0.8, 0.95]
+  # Horizons at which we report the required per-step competence p*.
+  query_horizons: [8, 16, 32, 64, 128]
+  bootstrap_resamples: 1000
+
+io:
+  results_dir: results
+  run_name: baseline
